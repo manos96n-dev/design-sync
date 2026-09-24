@@ -43,8 +43,7 @@ const files = [
 const registry = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   name: "design-sync",
-  homepage:
-    process.env.REGISTRY_HOMEPAGE ?? "https://example.invalid/design-sync",
+  homepage: process.env.REGISTRY_HOMEPAGE ?? "https://registry.manosnits.com",
   items: [
     {
       name: "design-sync",

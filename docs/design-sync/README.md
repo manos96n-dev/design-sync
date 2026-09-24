@@ -29,7 +29,7 @@ Pass only those values to the CLI. Do not paste a Markdown link or the entire Fi
 Run from the repository root. In a monorepo, use the workspace root.
 
 ```sh
-npx shadcn@latest add https://<registry>/r/design-sync.json
+npx shadcn@latest add https://registry.manosnits.com/r/design-sync.json
 ```
 
 The registry adds `tools/design-sync/`, `docs/design-sync/`, and pinned development dependencies. It does not replace application configuration or project state.
@@ -179,7 +179,7 @@ See [Figma provider](figma.md) for authentication and API failures, and [Command
 ## Upgrade
 
 1. Commit project state and local toolkit customizations.
-2. Inspect `npx shadcn@latest add https://<registry>/r/design-sync.json --dry-run` and `--diff`.
+2. Inspect `npx shadcn@latest add https://registry.manosnits.com/r/design-sync.json --dry-run` and `--diff`.
 3. Apply the reviewed update. Use `--overwrite` only when ready to replace registry-owned files.
 4. Run `pnpm design:migrate`; add `--apply` only after reviewing the preview.
 5. Run `pnpm design:scan` and inspect status.

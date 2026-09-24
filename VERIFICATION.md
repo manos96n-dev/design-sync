@@ -18,7 +18,7 @@ Implementation date: 2026-09-24. Local host: macOS, Node 26.9.0, pnpm 10.32.1. R
 
 - Real-Figma acceptance of the full disposable-baseline workflow remains pending. Run `pnpm test:live` with FIGMA_ACCESS_TOKEN, DESIGN_SYNC_TEST_FILE, and DESIGN_SYNC_TEST_NODE. Real read-only scans in the private consumer project consumer did succeed using its existing toolkit .env after the dotenv fix; the latest discovered multiple units. No Figma data or synchronization baseline was modified.
 - Linux/Windows execution: CI matrix is configured but has not run from this local repository. Windows symlink escape testing is skipped because it requires additional OS privileges; path normalization is covered on all platforms.
-- Public deployment: intentionally deferred. `public/r/design-sync.json` is ready for static hosting, with REGISTRY_HOMEPAGE set to the eventual public location.
+- Production deployment is configured for Vercel at `registry.manosnits.com`, but the Vercel project and DNS still need to be connected before the public URL can be accepted as live.
 - Visual equivalence: extension interface only. V1 tracks explicitly accepted revisions, not rendered similarity.
 
 The installation tests use a controlled Figma response transport to exercise the real installed CLI. They do not substitute for live API acceptance. Migration tests use a synthetic future step to exercise backup/preservation; V1 has no invented legacy production migration.
