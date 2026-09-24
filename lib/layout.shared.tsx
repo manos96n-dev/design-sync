@@ -1,4 +1,4 @@
-import { Code2, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 
 export function baseOptions(): BaseLayoutProps {
@@ -18,12 +18,6 @@ export function baseOptions(): BaseLayoutProps {
       {
         text: "Registry item",
         url: "/r/design-sync.json",
-        secondary: true,
-      },
-      {
-        icon: <Code2 />,
-        text: "Source",
-        url: "https://github.com/manos96n-dev/design-sync",
         secondary: true,
       },
     ],
