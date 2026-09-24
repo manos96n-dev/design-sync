@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "provider": {
+      "type": "string",
+      "const": "figma"
+    },
+    "figma": {
+      "type": "object",
+      "properties": {
+        "fileKey": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fileKey"
+      ],
+      "additionalProperties": {}
+    },
+    "tracking": {
+      "type": "object",
+      "properties": {
+        "roots": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "include": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exclude": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "nodeTypes": {
+          "default": [
+            "FRAME",
+            "COMPONENT",
+            "COMPONENT_SET"
+          ],
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "FRAME",
+              "COMPONENT",
+              "COMPONENT_SET",
+              "INSTANCE",
+              "SECTION"
+            ]
+          }
+        }
+      },
+      "required": [
+        "roots",
+        "include",
+        "exclude",
+        "nodeTypes"
+      ],
+      "additionalProperties": {}
+    },
+    "ci": {
+      "default": {
+        "failOn": [
+          "NEEDS_REVIEW"
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "failOn": {
+          "default": [
+            "NEEDS_REVIEW"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "NOT_IMPLEMENTED",
+              "IMPLEMENTED",
+              "DESIGN_CHANGED",
+              "CODE_CHANGED",
+              "NEEDS_REVIEW",
+              "IGNORED"
+            ]
+          }
+        }
+      },
+      "required": [
+        "failOn"
+      ],
+      "additionalProperties": {}
+    }
+  },
+  "required": [
+    "version",
+    "provider",
+    "figma",
+    "tracking",
+    "ci"
+  ],
+  "additionalProperties": {}
+}

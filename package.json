@@ -1,0 +1,36 @@
+{
+  "name": "design-sync-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "design": "tsx registry/design-sync/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:install": "tsx scripts/test-install.ts",
+    "test:live": "tsx scripts/test-live.ts",
+    "registry:prepare": "tsx scripts/registry.ts",
+    "registry:build": "pnpm registry:prepare && shadcn build registry.json --output public/r && tsx scripts/validate-registry.ts",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm registry:build"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.2",
+    "@types/node": "22.19.15",
+    "commander": "15.0.0",
+    "eslint": "9.39.2",
+    "prettier": "3.8.1",
+    "shadcn": "4.21.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.55.0",
+    "vitest": "4.0.18",
+    "zod": "4.6.5"
+  }
+}

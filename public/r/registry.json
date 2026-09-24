@@ -1,0 +1,189 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "design-sync",
+  "homepage": "https://example.invalid/design-sync",
+  "items": [
+    {
+      "name": "design-sync",
+      "type": "registry:item",
+      "title": "Design Sync",
+      "description": "Framework-independent Figma/code synchronization tracking.",
+      "devDependencies": [
+        "tsx@4.23.15",
+        "zod@4.6.5",
+        "commander@15.0.0"
+      ],
+      "files": [
+        {
+          "path": "registry/design-sync/.env.example",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/.env.example"
+        },
+        {
+          "path": "registry/design-sync/agents/workflow.md",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/agents/workflow.md"
+        },
+        {
+          "path": "registry/design-sync/cli.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/cli.ts"
+        },
+        {
+          "path": "registry/design-sync/commands/mutate.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/commands/mutate.ts"
+        },
+        {
+          "path": "registry/design-sync/commands/observe.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/commands/observe.ts"
+        },
+        {
+          "path": "registry/design-sync/core/classifier.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/classifier.ts"
+        },
+        {
+          "path": "registry/design-sync/core/diff.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/diff.ts"
+        },
+        {
+          "path": "registry/design-sync/core/errors.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/errors.ts"
+        },
+        {
+          "path": "registry/design-sync/core/hashing.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/hashing.ts"
+        },
+        {
+          "path": "registry/design-sync/core/normalization.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/normalization.ts"
+        },
+        {
+          "path": "registry/design-sync/core/schemas.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/schemas.ts"
+        },
+        {
+          "path": "registry/design-sync/core/types.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/core/types.ts"
+        },
+        {
+          "path": "registry/design-sync/output/human.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/output/human.ts"
+        },
+        {
+          "path": "registry/design-sync/output/json.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/output/json.ts"
+        },
+        {
+          "path": "registry/design-sync/package.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/package.json"
+        },
+        {
+          "path": "registry/design-sync/providers/figma.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/providers/figma.ts"
+        },
+        {
+          "path": "registry/design-sync/providers/normalization.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/providers/normalization.ts"
+        },
+        {
+          "path": "registry/design-sync/providers/types.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/providers/types.ts"
+        },
+        {
+          "path": "registry/design-sync/schemas/config.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/config.json"
+        },
+        {
+          "path": "registry/design-sync/schemas/error.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/error.json"
+        },
+        {
+          "path": "registry/design-sync/schemas/manifest.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/manifest.json"
+        },
+        {
+          "path": "registry/design-sync/schemas/report.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/report.json"
+        },
+        {
+          "path": "registry/design-sync/schemas/snapshot.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/snapshot.json"
+        },
+        {
+          "path": "registry/design-sync/schemas/success.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/success.json"
+        },
+        {
+          "path": "registry/design-sync/storage/migrations.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/storage/migrations.ts"
+        },
+        {
+          "path": "registry/design-sync/storage/paths.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/storage/paths.ts"
+        },
+        {
+          "path": "registry/design-sync/storage/state.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/storage/state.ts"
+        },
+        {
+          "path": "docs/design-sync/README.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/README.md"
+        },
+        {
+          "path": "docs/design-sync/agents.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/agents.md"
+        },
+        {
+          "path": "docs/design-sync/architecture.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/architecture.md"
+        },
+        {
+          "path": "docs/design-sync/ci.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/ci.md"
+        },
+        {
+          "path": "docs/design-sync/commands.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/commands.md"
+        },
+        {
+          "path": "docs/design-sync/figma.md",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/figma.md"
+        }
+      ],
+      "docs": "Run pnpm exec tsx tools/design-sync/cli.ts init. Configure FIGMA_ACCESS_TOKEN in your environment. Read docs/design-sync/README.md.",
+      "meta": {
+        "toolVersion": "0.1.0"
+      }
+    }
+  ]
+}

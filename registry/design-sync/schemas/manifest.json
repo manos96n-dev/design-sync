@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "nodes": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "object",
+            "properties": {
+              "provider": {
+                "type": "string",
+                "const": "figma"
+              },
+              "fileKey": {
+                "type": "string",
+                "minLength": 1
+              },
+              "nodeId": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "provider",
+              "fileKey",
+              "nodeId"
+            ],
+            "additionalProperties": false
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "implementation": {
+            "type": "object",
+            "properties": {
+              "files": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "route": {
+                "type": "string"
+              },
+              "story": {
+                "type": "string"
+              },
+              "test": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "files"
+            ],
+            "additionalProperties": {}
+          },
+          "baseline": {
+            "type": "object",
+            "properties": {
+              "designRevision": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "codeRevision": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              },
+              "snapshot": {
+                "type": "string",
+                "minLength": 1
+              },
+              "lastSyncedAt": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              }
+            },
+            "required": [
+              "designRevision",
+              "codeRevision",
+              "snapshot",
+              "lastSyncedAt"
+            ],
+            "additionalProperties": {}
+          }
+        },
+        "required": [
+          "reference",
+          "name",
+          "type"
+        ],
+        "additionalProperties": {}
+      }
+    }
+  },
+  "required": [
+    "version",
+    "nodes"
+  ],
+  "additionalProperties": {}
+}
