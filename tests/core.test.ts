@@ -123,6 +123,23 @@ describe("normalization and diff", () => {
       designRevision(normalizeFigma(moved)),
     );
   });
+  it("tracks Figma dev status without changing visual revisions or diffs", () => {
+    const unmarked = normalizeFigma(base());
+    const ready = normalizeFigma({
+      ...base(),
+      devStatus: {
+        type: "READY_FOR_DEV",
+        description: "Implementation can begin",
+      },
+    });
+    expect(unmarked.devStatus).toBeNull();
+    expect(ready.devStatus).toEqual({
+      type: "READY_FOR_DEV",
+      description: "Implementation can begin",
+    });
+    expect(designRevision(ready)).toBe(designRevision(unmarked));
+    expect(diffDesign(unmarked, ready)).toEqual([]);
+  });
   it.each([
     "layout",
     "typography",
@@ -228,6 +245,14 @@ it("rejects malformed implementation-relevant provider properties", () => {
       name: "x",
       type: "FRAME",
       children: "not-an-array",
+    }),
+  ).toThrow();
+  expect(() =>
+    normalizeFigma({
+      id: "a",
+      name: "x",
+      type: "FRAME",
+      devStatus: { type: "ALMOST_READY" },
     }),
   ).toThrow();
 });

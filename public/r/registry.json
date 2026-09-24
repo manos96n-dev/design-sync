@@ -30,6 +30,11 @@
           "target": "~/tools/design-sync/cli.ts"
         },
         {
+          "path": "registry/design-sync/commands/agent.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/commands/agent.ts"
+        },
+        {
           "path": "registry/design-sync/commands/mutate.ts",
           "type": "registry:file",
           "target": "~/tools/design-sync/commands/mutate.ts"
@@ -105,6 +110,11 @@
           "target": "~/tools/design-sync/providers/types.ts"
         },
         {
+          "path": "registry/design-sync/schemas/agent-plan.json",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/schemas/agent-plan.json"
+        },
+        {
           "path": "registry/design-sync/schemas/config.json",
           "type": "registry:file",
           "target": "~/tools/design-sync/schemas/config.json"
@@ -133,6 +143,11 @@
           "path": "registry/design-sync/schemas/success.json",
           "type": "registry:file",
           "target": "~/tools/design-sync/schemas/success.json"
+        },
+        {
+          "path": "registry/design-sync/storage/environment.ts",
+          "type": "registry:file",
+          "target": "~/tools/design-sync/storage/environment.ts"
         },
         {
           "path": "registry/design-sync/storage/migrations.ts",

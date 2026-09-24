@@ -1,12 +1,4 @@
 {
-  "name": "design-sync-registry",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "packageManager": "pnpm@10.32.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
   "scripts": {
     "design": "tsx registry/design-sync/cli.ts",
     "typecheck": "tsc --noEmit",
@@ -18,7 +10,25 @@
     "test:live": "tsx scripts/test-live.ts",
     "registry:prepare": "tsx scripts/registry.ts",
     "registry:build": "pnpm registry:prepare && shadcn build registry.json --output public/r && tsx scripts/validate-registry.ts",
-    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm registry:build"
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm registry:build",
+    "design:init": "tsx \"registry/design-sync/cli.ts\" init",
+    "design:register": "tsx \"registry/design-sync/cli.ts\" register",
+    "design:scan": "tsx \"registry/design-sync/cli.ts\" scan",
+    "design:status": "tsx \"registry/design-sync/cli.ts\" status",
+    "design:agent-plan": "tsx \"registry/design-sync/cli.ts\" agent-plan",
+    "design:diff": "tsx \"registry/design-sync/cli.ts\" diff",
+    "design:sync": "tsx \"registry/design-sync/cli.ts\" sync",
+    "design:check": "tsx \"registry/design-sync/cli.ts\" check",
+    "design:migrate": "tsx \"registry/design-sync/cli.ts\" migrate",
+    "design:version": "tsx \"registry/design-sync/cli.ts\" version"
+  },
+  "name": "design-sync-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=22.12.0"
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",

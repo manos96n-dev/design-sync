@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, realpath, writeFile } from "node:fs/promises";
 import { z } from "zod";
 import { configSchema, cacheSchema, type NodeRecord } from "../core/schemas.js";
 import { DesignSyncError } from "../core/errors.js";
@@ -23,6 +23,7 @@ const commandNames = [
   "register",
   "scan",
   "status",
+  "agent-plan",
   "diff",
   "sync",
   "check",
@@ -81,7 +82,12 @@ export async function init(
         .object({ scripts: z.record(z.string(), z.string()).optional() })
         .passthrough()
         .parse(JSON.parse(await readFile(pkgFile, "utf8")));
-      const relativeCli = normalizePath(path.relative(root, cliPath));
+      // Windows can expose the same temporary directory through both a short
+      // 8.3 path and its long path. Canonicalize both sides before deriving
+      // the repository-relative script path.
+      const relativeCli = normalizePath(
+        path.relative(await realpath(root), await realpath(cliPath)),
+      );
       const scripts = { ...pkg.scripts };
       for (const name of commandNames) {
         const key = `design:${name}`,
@@ -130,7 +136,9 @@ export async function init(
         "Set figma.fileKey in .design-sync/config.json before scanning.",
       );
     if (!process.env.FIGMA_ACCESS_TOKEN)
-      warnings.push("Set FIGMA_ACCESS_TOKEN before live Figma commands.");
+      warnings.push(
+        "Set FIGMA_ACCESS_TOKEN in your shell or .env before live Figma commands.",
+      );
     return { root, initialized: true, warnings };
   });
 }

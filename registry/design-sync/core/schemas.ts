@@ -7,6 +7,12 @@ export const referenceSchema = z.object({
   fileKey: z.string().min(1),
   nodeId,
 });
+export const devStatusSchema = z
+  .object({
+    type: z.enum(["READY_FOR_DEV", "COMPLETED"]),
+    description: z.string().optional(),
+  })
+  .nullable();
 export const revisionSchema = z.string().regex(/^sha256:[a-f0-9]{64}$/);
 export const configSchema = z
   .object({
@@ -71,6 +77,7 @@ export const designNodeSchema: z.ZodType<DesignNode> = z.lazy(() =>
     id: nodeId,
     name: z.string(),
     type: z.string(),
+    devStatus: devStatusSchema.optional(),
     properties: z.record(z.string(), z.json()),
     children: z.array(designNodeSchema),
     issues: z.array(z.string()),
@@ -106,6 +113,7 @@ export const nodeResultSchema = z.object({
   nodeId,
   name: z.string(),
   status: statusSchema,
+  devStatus: devStatusSchema.optional(),
   route: z.string().optional(),
   implementationFiles: z.array(z.string()),
   baselineDesignRevision: revisionSchema.optional(),
@@ -129,6 +137,66 @@ export const reportSchema = z.object({
     codeChanged: z.number(),
     needsReview: z.number(),
     ignored: z.number(),
+    devStatus: z.object({
+      readyForDev: z.number(),
+      completed: z.number(),
+      none: z.number(),
+      unknown: z.number(),
+    }),
+    coverage: z.object({
+      active: z.number(),
+      mappedToCode: z.number(),
+      mappedAwaitingBaseline: z.number(),
+      acceptedBaselines: z.number(),
+      unmapped: z.number(),
+    }),
+  }),
+});
+export const agentPlanSchema = z.object({
+  version: z.literal(1),
+  kind: z.literal("design-mapping"),
+  agentStarted: z.literal(false),
+  recommendation: z.enum(["START_AGENT", "NO_ACTION"]),
+  approval: z.object({
+    requiredBeforeAgentStart: z.boolean(),
+    granted: z.literal(false),
+    tokenUsageNotice: z.boolean(),
+    question: z.string(),
+  }),
+  figmaCompletionApproval: z.object({
+    requiredBeforeWrite: z.literal(true),
+    granted: z.literal(false),
+    defaultAction: z.literal("LEAVE_FIGMA_UNCHANGED"),
+    cliCanWrite: z.literal(false),
+    question: z.string(),
+    instructions: z.string(),
+  }),
+  mappingCandidateCount: z.number().int().nonnegative(),
+  readiness: z.object({
+    readyForDev: z.number().int().nonnegative(),
+    completed: z.number().int().nonnegative(),
+    none: z.number().int().nonnegative(),
+    unknown: z.number().int().nonnegative(),
+  }),
+  mappingCandidates: z.array(
+    z.object({
+      reference: referenceSchema,
+      nodeId,
+      name: z.string(),
+      status: statusSchema,
+      devStatus: devStatusSchema.optional(),
+      route: z.string().optional(),
+      reasons: z.array(z.string()),
+    }),
+  ),
+  copyablePrompt: z.string().optional(),
+  promptAfterApproval: z.string().optional(),
+  observation: z.object({
+    observedAt: z.iso.datetime(),
+    freshness: z.object({
+      source: z.enum(["cache", "live"]),
+      ageSeconds: z.number().nonnegative(),
+    }),
   }),
 });
 const envelope = {

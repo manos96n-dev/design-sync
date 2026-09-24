@@ -16,6 +16,8 @@ import {
   migrate,
 } from "../registry/design-sync/commands/mutate.js";
 import { scan, status } from "../registry/design-sync/commands/observe.js";
+import { buildAgentPlan } from "../registry/design-sync/commands/agent.js";
+import { formatReport } from "../registry/design-sync/output/human.js";
 import { normalizeFigma } from "../registry/design-sync/providers/normalization.js";
 import type { DesignProvider } from "../registry/design-sync/providers/types.js";
 import {
@@ -27,7 +29,10 @@ import {
   statePath,
   withLock,
 } from "../registry/design-sync/storage/state.js";
-import { reportSchema } from "../registry/design-sync/core/schemas.js";
+import {
+  agentPlanSchema,
+  reportSchema,
+} from "../registry/design-sync/core/schemas.js";
 let root: string;
 let width: number;
 const provider: DesignProvider = {
@@ -80,6 +85,8 @@ beforeEach(async () => {
     }),
   );
   await writeFile(path.join(root, "screen.ts"), "export const value = 1;\n");
+  await mkdir(path.join(root, "tools/design-sync"), { recursive: true });
+  await writeFile(path.join(root, "tools/design-sync/cli.ts"), "// fixture\n");
   await init(
     root,
     { file: "file", trackingRoots: "0:1" },
@@ -89,14 +96,83 @@ beforeEach(async () => {
 afterEach(async () => {
   await rm(root, { recursive: true, force: true });
 });
+it.runIf(process.platform !== "win32")(
+  "canonicalizes an aliased installed CLI path before writing package scripts",
+  async () => {
+    const realRoot = await mkdtemp(
+      path.join(os.tmpdir(), "design-sync-real-root-"),
+    );
+    const aliasRoot = `${realRoot}-alias`;
+    try {
+      await mkdir(path.join(realRoot, "tools/design-sync"), {
+        recursive: true,
+      });
+      await writeFile(
+        path.join(realRoot, "tools/design-sync/cli.ts"),
+        "// fixture\n",
+      );
+      await writeFile(
+        path.join(realRoot, "package.json"),
+        JSON.stringify({ name: "aliased-fixture", private: true }),
+      );
+      await symlink(realRoot, aliasRoot, "dir");
+      await init(
+        realRoot,
+        { file: "file", trackingRoots: "0:1" },
+        path.join(aliasRoot, "tools/design-sync/cli.ts"),
+      );
+      const pkg = JSON.parse(
+        await readFile(path.join(realRoot, "package.json"), "utf8"),
+      );
+      expect(pkg.scripts["design:init"]).toBe(
+        'tsx "tools/design-sync/cli.ts" init',
+      );
+    } finally {
+      await rm(aliasRoot, { recursive: true, force: true });
+      await rm(realRoot, { recursive: true, force: true });
+    }
+  },
+);
 it("supports the full explicit baseline lifecycle", async () => {
   let report = await scan(root, provider);
   expect(report.nodes).toHaveLength(1);
   expect(report.nodes[0]!.status).toBe("NOT_IMPLEMENTED");
+  expect(report.summary.coverage).toEqual({
+    active: 1,
+    mappedToCode: 0,
+    mappedAwaitingBaseline: 0,
+    acceptedBaselines: 0,
+    unmapped: 1,
+  });
+  const concise = formatReport(report);
+  expect(concise).toContain("0/1 active designs mapped to code (0%)");
+  expect(concise).toContain("Unmapped · Not ready or unmarked (1)");
+  expect(concise.indexOf("Implementation coverage")).toBeLessThan(
+    concise.indexOf("Needs attention"),
+  );
+  expect(formatReport(report, { showAll: true })).toContain(
+    "All tracked nodes",
+  );
   await register(root, { node: "1:1", files: "screen.ts" });
-  expect((await status(root)).nodes[0]!.status).toBe("NOT_IMPLEMENTED");
+  report = await status(root);
+  expect(report.nodes[0]!.status).toBe("NOT_IMPLEMENTED");
+  expect(report.summary.coverage).toEqual({
+    active: 1,
+    mappedToCode: 1,
+    mappedAwaitingBaseline: 1,
+    acceptedBaselines: 0,
+    unmapped: 0,
+  });
   await sync(root, "1:1", provider);
-  expect((await status(root)).nodes[0]!.status).toBe("IMPLEMENTED");
+  report = await status(root);
+  expect(report.nodes[0]!.status).toBe("IMPLEMENTED");
+  expect(report.summary.coverage).toEqual({
+    active: 1,
+    mappedToCode: 1,
+    mappedAwaitingBaseline: 0,
+    acceptedBaselines: 1,
+    unmapped: 0,
+  });
   width = 120;
   report = await scan(root, provider);
   expect(report.nodes[0]!.status).toBe("DESIGN_CHANGED");
@@ -109,6 +185,64 @@ it("supports the full explicit baseline lifecycle", async () => {
   await writeFile(path.join(root, "screen.ts"), "export const value = 3;\n");
   expect((await status(root)).nodes[0]!.status).toBe("CODE_CHANGED");
   expect(reportSchema.safeParse(await status(root)).success).toBe(true);
+});
+it("prepares an approval-gated agent handoff without starting an agent", async () => {
+  const report = await scan(root, provider);
+  const plan = buildAgentPlan(report);
+  expect(agentPlanSchema.parse(plan)).toEqual(plan);
+  expect(plan.agentStarted).toBe(false);
+  expect(plan.recommendation).toBe("START_AGENT");
+  expect(plan.approval).toMatchObject({
+    requiredBeforeAgentStart: true,
+    granted: false,
+    tokenUsageNotice: true,
+  });
+  expect(plan.approval.question).toContain("model token allowance");
+  expect(plan.mappingCandidateCount).toBe(1);
+  expect(plan.readiness).toEqual({
+    readyForDev: 0,
+    completed: 0,
+    none: 1,
+    unknown: 0,
+  });
+  expect(plan.mappingCandidates[0]!.nodeId).toBe("1:1");
+  expect(plan.promptAfterApproval).toContain("explicitly approved");
+  expect(plan.copyablePrompt).toContain(
+    "Do not start, spawn, delegate to, or perform",
+  );
+  expect(plan.copyablePrompt).toContain("model token allowance");
+  expect(plan.copyablePrompt).toContain("figmaCompletionApproval.question");
+  expect(plan.figmaCompletionApproval).toMatchObject({
+    requiredBeforeWrite: true,
+    granted: false,
+    defaultAction: "LEAVE_FIGMA_UNCHANGED",
+    cliCanWrite: false,
+  });
+  expect(plan.figmaCompletionApproval.question).toContain(
+    "mark these exact Figma nodes as Completed",
+  );
+  expect((await status(root)).nodes[0]!.devStatus).toBeNull();
+
+  await register(root, { node: "1:1", files: "screen.ts" });
+  const emptyPlan = buildAgentPlan(await status(root));
+  expect(emptyPlan).toMatchObject({
+    agentStarted: false,
+    recommendation: "NO_ACTION",
+    mappingCandidateCount: 0,
+    readiness: {
+      readyForDev: 0,
+      completed: 0,
+      none: 0,
+      unknown: 0,
+    },
+    approval: {
+      requiredBeforeAgentStart: false,
+      granted: false,
+      tokenUsageNotice: false,
+    },
+  });
+  expect(emptyPlan).not.toHaveProperty("promptAfterApproval");
+  expect(emptyPlan).not.toHaveProperty("copyablePrompt");
 });
 it("does not overwrite state or scripts on repeated initialization", async () => {
   const before = await readFile(statePath(root, "config.json"), "utf8");
@@ -269,7 +403,9 @@ it("exclusions win and changed tracking requires a new scan", async () => {
   config.tracking.exclude = ["1:1"];
   await writeFile(file, JSON.stringify(config));
   await expect(status(root)).rejects.toMatchObject({ code: "SCAN_REQUIRED" });
-  expect((await scan(root, provider)).nodes[0]!.status).toBe("IGNORED");
+  const ignored = (await scan(root, provider)).nodes[0]!;
+  expect(ignored.status).toBe("IGNORED");
+  expect(ignored.reasons).toEqual(["INTENTIONALLY_EXCLUDED"]);
   await register(root, { node: "1:1", files: "screen.ts" });
   await expect(sync(root, "1:1", provider)).rejects.toMatchObject({
     code: "NODE_IGNORED",

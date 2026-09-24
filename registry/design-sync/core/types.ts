@@ -22,10 +22,15 @@ export type DesignNodeReference = {
   fileKey: string;
   nodeId: string;
 };
+export type DevStatus = {
+  type: "READY_FOR_DEV" | "COMPLETED";
+  description?: string;
+};
 export type DesignNode = {
   id: string;
   name: string;
   type: string;
+  devStatus?: DevStatus | null;
   properties: Record<string, Json>;
   children: DesignNode[];
   issues: string[];

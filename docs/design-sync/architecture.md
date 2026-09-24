@@ -64,9 +64,9 @@ The identity key encodes the entire canonical provider/file/node reference. Name
 
 ## Snapshots and revisions
 
-A snapshot contains `version`, `normalizationVersion`, `reference`, `designRevision`, and `node`. A normalized node contains `id`, `name`, `type`, `properties`, `children`, and `issues`. Published JSON Schemas live in `tools/design-sync/schemas/`.
+A snapshot contains `version`, `normalizationVersion`, `reference`, `designRevision`, and `node`. A normalized node contains `id`, `name`, `type`, optional `devStatus`, `properties`, `children`, and `issues`. Published JSON Schemas live in `tools/design-sync/schemas/`.
 
-Design hashing excludes display names and canvas translation of the tracked root. Child identity/order and relative layout remain meaningful. The provider allowlist covers dimensions, constraints, auto-layout, sizing, grid layout, fills/strokes, radii, effects, opacity, text/runs/styles, component references/properties, variable bindings, visibility, and vector geometry. Object keys are canonical; arrays retain order. Volatile API/editor data is excluded. Unknown node types and missing vector geometry require review.
+Design hashing excludes display names, Figma Dev Mode status, and canvas translation of the tracked root. Child identity/order and relative layout remain meaningful. The provider allowlist covers dimensions, constraints, auto-layout, sizing, grid layout, fills/strokes, radii, effects, opacity, text/runs/styles, component references/properties, variable bindings, visibility, and vector geometry. Object keys are canonical; arrays retain order. Volatile API/editor data is excluded. Unknown node types and missing vector geometry require review.
 
 Figma property additions are not automatically included: extend the tested normalization allowlist and increment normalization version when semantics change. The REST response supplies resolved appearance plus references; V1 does not recursively retrieve external library definitions or implement variable-mode simulation. This is design-state tracking, not a complete rendering engine.
 
@@ -79,6 +79,8 @@ Snapshots are written before their manifest references. Interrupted writes can l
 ## Classification
 
 Ignored takes precedence. Missing designs, invalid mappings/files, corrupt snapshots, and unsupported structures require review. Without a mapping or baseline the result is NOT_IMPLEMENTED. Otherwise equal revisions mean IMPLEMENTED; design-only/code-only changes yield DESIGN_CHANGED/CODE_CHANGED; both changes yield NEEDS_REVIEW.
+
+`NOT_IMPLEMENTED` is a baseline classification, not a claim that no code exists. Reports include a separate coverage breakdown: active designs, mappings to code, mapped nodes awaiting baseline acceptance, accepted baselines, and unmapped nodes.
 
 `IMPLEMENTED` means agreement with an explicitly accepted baseline and the reported design observation. It never asserts visual equivalence or that cached designs are currently live.
 

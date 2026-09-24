@@ -121,7 +121,7 @@ try {
       ...process.env,
       npm_config_ignore_workspace_root_check: "true",
       CI: "true",
-      FIGMA_ACCESS_TOKEN: "fixture-token",
+      FIGMA_ACCESS_TOKEN: undefined,
     };
     console.log(`Installing into ${kind} through ${url}`);
     await execute(
@@ -139,6 +139,10 @@ try {
     assert.deepEqual(pkg.custom, { preserve: true });
     for (const [file, contents] of Object.entries(before))
       assert.equal(await readFile(path.join(root, file), "utf8"), contents);
+    await writeFile(
+      path.join(root, ".env"),
+      "FIGMA_ACCESS_TOKEN=fixture-token\n",
+    );
     const implementation =
       kind === "monorepo" ? "packages/ui/screen.ts" : "screen.ts";
     await writeFile(
@@ -191,6 +195,16 @@ try {
     assert.equal(
       (await cli(["scan"])).result.nodes[0].status,
       "NOT_IMPLEMENTED",
+    );
+    const agentPlan = (await cli(["agent-plan"])).result;
+    assert.equal(agentPlan.agentStarted, false);
+    assert.equal(agentPlan.approval.requiredBeforeAgentStart, true);
+    assert.equal(agentPlan.approval.granted, false);
+    assert.equal(agentPlan.approval.tokenUsageNotice, true);
+    assert.equal(agentPlan.mappingCandidateCount, 1);
+    assert.ok(
+      JSON.parse(await readFile(path.join(root, "package.json"), "utf8"))
+        .scripts["design:agent-plan"],
     );
     await cli(["register", "--node", "1:1", "--files", implementation]);
     assert.equal(

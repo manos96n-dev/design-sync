@@ -1,3 +1,5 @@
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import path from "node:path";
@@ -40,8 +42,13 @@ it.each([
     "INVALID_ARGUMENT",
   );
 });
-it("missing cache is an actionable tool error", async () => {
-  const result = await invoke(["status", "--json"]);
-  expect(result.code).toBe(2);
-  expect(errorEnvelopeSchema.parse(JSON.parse(result.stdout)).ok).toBe(false);
+it("an uninitialized project returns an actionable tool error", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "design-sync-cli-"));
+  try {
+    const result = await invoke(["status", "--root", root, "--json"]);
+    expect(result.code).toBe(2);
+    expect(errorEnvelopeSchema.parse(JSON.parse(result.stdout)).ok).toBe(false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
 });

@@ -6,6 +6,13 @@ const rawSchema = z
     id: z.string().min(1),
     name: z.string(),
     type: z.string(),
+    devStatus: z
+      .object({
+        type: z.enum(["READY_FOR_DEV", "COMPLETED"]),
+        description: z.string().optional(),
+      })
+      .nullable()
+      .optional(),
     children: z.array(z.unknown()).optional(),
   })
   .passthrough();
@@ -138,6 +145,7 @@ export function normalizeFigma(raw: unknown): DesignNode {
       id: source.id,
       name: source.name,
       type: source.type,
+      devStatus: source.devStatus ?? null,
       properties: props,
       children,
       issues: [...issues, ...children.flatMap((c) => c.issues)],

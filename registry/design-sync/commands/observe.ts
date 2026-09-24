@@ -188,7 +188,8 @@ export async function buildReport(
       currentDesignRevision,
       currentCodeRevision,
     });
-    if (!record?.implementation) reasons.push("MAPPING_MISSING");
+    if (ignored) reasons.push("INTENTIONALLY_EXCLUDED");
+    else if (!record?.implementation) reasons.push("MAPPING_MISSING");
     else if (!record.baseline) reasons.push("BASELINE_MISSING");
     if (status === "NEEDS_REVIEW" && reasons.length === 0)
       reasons.push("BOTH_CHANGED");
@@ -197,6 +198,9 @@ export async function buildReport(
       nodeId: id,
       name: node?.name ?? record?.name ?? id,
       status,
+      ...(node && "devStatus" in node
+        ? { devStatus: node.devStatus ?? null }
+        : {}),
       ...(record?.implementation?.route !== undefined
         ? { route: record.implementation.route }
         : {}),
@@ -232,6 +236,36 @@ export async function buildReport(
       codeChanged: count("CODE_CHANGED"),
       needsReview: count("NEEDS_REVIEW"),
       ignored: count("IGNORED"),
+      devStatus: {
+        readyForDev: result.filter(
+          (node) => node.devStatus?.type === "READY_FOR_DEV",
+        ).length,
+        completed: result.filter((node) => node.devStatus?.type === "COMPLETED")
+          .length,
+        none: result.filter((node) => node.devStatus === null).length,
+        unknown: result.filter((node) => node.devStatus === undefined).length,
+      },
+      coverage: {
+        active: result.filter((node) => node.status !== "IGNORED").length,
+        mappedToCode: result.filter(
+          (node) =>
+            node.status !== "IGNORED" && node.implementationFiles.length > 0,
+        ).length,
+        mappedAwaitingBaseline: result.filter(
+          (node) =>
+            node.status !== "IGNORED" &&
+            node.implementationFiles.length > 0 &&
+            !node.baselineDesignRevision,
+        ).length,
+        acceptedBaselines: result.filter(
+          (node) =>
+            node.status !== "IGNORED" && Boolean(node.baselineDesignRevision),
+        ).length,
+        unmapped: result.filter(
+          (node) =>
+            node.status !== "IGNORED" && node.implementationFiles.length === 0,
+        ).length,
+      },
     },
   };
 }

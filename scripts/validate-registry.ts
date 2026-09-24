@@ -9,6 +9,12 @@ const item = registryItemSchema.parse(
 if (registry.items.length !== 1 || item.type !== "registry:item")
   throw Error("Expected one universal item");
 for (const file of item.files ?? []) {
+  const basename = file.target?.split("/").at(-1) ?? "";
+  if (
+    basename === ".env" ||
+    (basename.startsWith(".env.") && basename !== ".env.example")
+  )
+    throw Error("Registry payload must not contain local environment files");
   if (
     !file.target?.startsWith("~/tools/design-sync/") &&
     !file.target?.startsWith("~/docs/design-sync/")

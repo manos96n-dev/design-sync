@@ -1,33 +1,22 @@
-import { readdir, readFile, mkdir, writeFile } from "node:fs/promises";
+import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { registryFiles } from "./registry-files.js";
 import { z } from "zod";
 import {
   configSchema,
   manifestSchema,
   snapshotSchema,
   reportEnvelopeSchema,
+  agentPlanSchema,
   errorEnvelopeSchema,
   successEnvelopeSchema,
 } from "../registry/design-sync/core/schemas.js";
-async function walk(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
-  return (
-    await Promise.all(
-      entries.map((entry) =>
-        entry.isDirectory()
-          ? walk(`${directory}/${entry.name}`)
-          : Promise.resolve([`${directory}/${entry.name}`]),
-      ),
-    )
-  )
-    .flat()
-    .sort();
-}
 await mkdir("registry/design-sync/schemas", { recursive: true });
 for (const [name, schema] of Object.entries({
   config: configSchema,
   manifest: manifestSchema,
   snapshot: snapshotSchema,
   report: reportEnvelopeSchema,
+  "agent-plan": agentPlanSchema,
   error: errorEnvelopeSchema,
   success: successEnvelopeSchema,
 }))
@@ -40,12 +29,12 @@ const pkg = JSON.parse(await readFile("package.json", "utf8")) as {
   version: string;
 };
 const files = [
-  ...(await walk("registry/design-sync")).map((file) => ({
+  ...(await registryFiles("registry/design-sync")).map((file) => ({
     path: file,
     type: "registry:file",
     target: `~/tools/design-sync/${file.slice("registry/design-sync/".length)}`,
   })),
-  ...(await walk("docs/design-sync")).map((file) => ({
+  ...(await registryFiles("docs/design-sync")).map((file) => ({
     path: file,
     type: "registry:file",
     target: `~/${file}`,

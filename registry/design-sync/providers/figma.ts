@@ -18,7 +18,7 @@ export class FigmaProvider implements DesignProvider {
     if (!this.token)
       throw new DesignSyncError(
         "MISSING_TOKEN",
-        "Set FIGMA_ACCESS_TOKEN in your shell or CI secrets. It needs file_content:read access to the configured file.",
+        "Set FIGMA_ACCESS_TOKEN in your shell, root .env, or tools/design-sync/.env. It needs file_content:read access to the configured file.",
       );
     const url = new URL(
       `https://api.figma.com/v1/files/${encodeURIComponent(fileKey)}/nodes`,

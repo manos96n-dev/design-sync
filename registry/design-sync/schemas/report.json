@@ -91,6 +91,32 @@
                   "IGNORED"
                 ]
               },
+              "devStatus": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "READY_FOR_DEV",
+                          "COMPLETED"
+                        ]
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "route": {
                 "type": "string"
               },
@@ -192,6 +218,58 @@
             },
             "ignored": {
               "type": "number"
+            },
+            "devStatus": {
+              "type": "object",
+              "properties": {
+                "readyForDev": {
+                  "type": "number"
+                },
+                "completed": {
+                  "type": "number"
+                },
+                "none": {
+                  "type": "number"
+                },
+                "unknown": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "readyForDev",
+                "completed",
+                "none",
+                "unknown"
+              ],
+              "additionalProperties": false
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "active": {
+                  "type": "number"
+                },
+                "mappedToCode": {
+                  "type": "number"
+                },
+                "mappedAwaitingBaseline": {
+                  "type": "number"
+                },
+                "acceptedBaselines": {
+                  "type": "number"
+                },
+                "unmapped": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "active",
+                "mappedToCode",
+                "mappedAwaitingBaseline",
+                "acceptedBaselines",
+                "unmapped"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -200,7 +278,9 @@
             "notImplemented",
             "codeChanged",
             "needsReview",
-            "ignored"
+            "ignored",
+            "devStatus",
+            "coverage"
           ],
           "additionalProperties": false
         }

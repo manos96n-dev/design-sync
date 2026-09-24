@@ -2,9 +2,11 @@ import { Command, CommanderError } from "commander";
 import { TOOL_VERSION } from "./core/types.js";
 import { DesignSyncError } from "./core/errors.js";
 import { resolveRoot } from "./storage/paths.js";
+import { loadFigmaEnvironment } from "./storage/environment.js";
 import { loadState } from "./storage/state.js";
 import { FigmaProvider } from "./providers/figma.js";
 import { scan, status } from "./commands/observe.js";
+import { buildAgentPlan } from "./commands/agent.js";
 import {
   init,
   register,
@@ -12,7 +14,11 @@ import {
   migrate,
   installedCli,
 } from "./commands/mutate.js";
-import { formatReport, formatChanges } from "./output/human.js";
+import {
+  formatReport,
+  formatChanges,
+  formatAgentPlan,
+} from "./output/human.js";
 import { successEnvelope, errorEnvelope } from "./output/json.js";
 const program = new Command();
 const jsonMode = process.argv.includes("--json");
@@ -39,6 +45,7 @@ async function run(
 ) {
   commandName = name;
   const root = await resolveRoot(program.opts<{ root?: string }>().root);
+  await loadFigmaEnvironment(root);
   const { result, human, exitCode } = await action(root);
   process.stdout.write(
     jsonMode
@@ -77,21 +84,46 @@ program
       result: await register(root, options),
     })),
   );
-program.command("scan").action(() =>
-  run("scan", async (root) => {
-    const result = await scan(root, new FigmaProvider());
-    return { result, human: formatReport(result) };
-  }),
-);
+program
+  .command("scan")
+  .option("--all", "Show every tracked node in human output")
+  .action((options) =>
+    run("scan", async (root) => {
+      const result = await scan(root, new FigmaProvider());
+      return {
+        result,
+        human: formatReport(result, { showAll: Boolean(options.all) }),
+      };
+    }),
+  );
 program
   .command("status")
   .option("--refresh")
+  .option("--all", "Show every tracked node in human output")
   .action((options) =>
     run("status", async (root) => {
       const result = options.refresh
         ? await scan(root, new FigmaProvider())
         : await status(root);
-      return { result, human: formatReport(result) };
+      return {
+        result,
+        human: formatReport(result, { showAll: Boolean(options.all) }),
+      };
+    }),
+  );
+program
+  .command("agent-plan")
+  .description(
+    "Prepare an approval-gated agent mapping handoff without starting an agent",
+  )
+  .option("--refresh")
+  .action((options) =>
+    run("agent-plan", async (root) => {
+      const report = options.refresh
+        ? await scan(root, new FigmaProvider())
+        : await status(root);
+      const result = buildAgentPlan(report);
+      return { result, human: formatAgentPlan(result) };
     }),
   );
 program
@@ -162,21 +194,24 @@ program
       };
     }),
   );
-program.command("check").action(() =>
-  run("check", async (root) => {
-    const result = await scan(root, new FigmaProvider());
-    const { config } = await loadState(root);
-    return {
-      result,
-      human: formatReport(result),
-      exitCode: result.nodes.some((node) =>
-        config.ci.failOn.includes(node.status),
-      )
-        ? 1
-        : 0,
-    };
-  }),
-);
+program
+  .command("check")
+  .option("--all", "Show every tracked node in human output")
+  .action((options) =>
+    run("check", async (root) => {
+      const result = await scan(root, new FigmaProvider());
+      const { config } = await loadState(root);
+      return {
+        result,
+        human: formatReport(result, { showAll: Boolean(options.all) }),
+        exitCode: result.nodes.some((node) =>
+          config.ci.failOn.includes(node.status),
+        )
+          ? 1
+          : 0,
+      };
+    }),
+  );
 program
   .command("migrate")
   .option("--apply", "Apply supported migrations; default previews")
