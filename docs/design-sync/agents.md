@@ -1,3 +1,8 @@
+---
+title: Agent integration
+description: Use Design Sync safely with coding agents and explicit approval boundaries.
+---
+
 # Agent integration
 
 Agents should treat Design Sync as the source of truth for discovery, hashes, diffs, classification, and stored baselines. Consume its versioned JSON instead of reproducing that logic in scripts or prompts.

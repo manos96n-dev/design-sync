@@ -1,5 +1,8 @@
 {
   "scripts": {
+    "dev": "next dev",
+    "build": "pnpm registry:build && next build",
+    "start": "next start",
     "design": "tsx registry/design-sync/cli.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -10,7 +13,7 @@
     "test:live": "tsx scripts/test-live.ts",
     "registry:prepare": "tsx scripts/registry.ts",
     "registry:build": "pnpm registry:prepare && shadcn build registry.json --output public/r && tsx scripts/validate-registry.ts",
-    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm registry:build",
+    "verify": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
     "design:init": "tsx \"registry/design-sync/cli.ts\" init",
     "design:register": "tsx \"registry/design-sync/cli.ts\" register",
     "design:scan": "tsx \"registry/design-sync/cli.ts\" scan",
@@ -32,15 +35,29 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/mdx": "^2.0.14",
     "@types/node": "22.19.15",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "commander": "15.0.0",
     "eslint": "9.39.2",
     "prettier": "3.8.1",
     "shadcn": "4.21.0",
+    "tailwindcss": "^4.3.3",
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "typescript-eslint": "8.55.0",
     "vitest": "4.0.18",
     "zod": "4.6.5"
+  },
+  "dependencies": {
+    "fumadocs-core": "16.15.14",
+    "fumadocs-mdx": "15.4.4",
+    "fumadocs-ui": "16.15.14",
+    "lucide-react": "^1.48.0",
+    "next": "16.3.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   }
 }

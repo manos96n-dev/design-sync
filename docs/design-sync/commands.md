@@ -1,3 +1,8 @@
+---
+title: Commands
+description: Reference every CLI command, option, exit code, and JSON response.
+---
+
 # Commands and machine interface
 
 Every command supports `--root <repository>` and `--json`. Run commands from the repository root unless `--root` points elsewhere. Package scripts are installed only when missing. If a script conflicts, use `pnpm exec tsx tools/design-sync/cli.ts <command>` directly. Agents should add `--silent` to package-script calls so stdout remains one parseable JSON document.

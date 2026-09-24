@@ -1,3 +1,8 @@
+---
+title: CI and verification
+description: Enforce design synchronization policy in continuous integration.
+---
+
 # CI and verification
 
 Install devDependencies: the distributed CLI uses tsx, Zod, and Commander as development tools. Run from repository root or pass --root.

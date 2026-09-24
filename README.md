@@ -53,9 +53,14 @@ Requirements: Node >=22.12 and pnpm 10.32.1.
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm dev
 pnpm verify
 pnpm test:install
 ```
+
+`pnpm dev` serves the Fumadocs site at `http://localhost:3000`. The site reads
+its pages directly from `docs/design-sync/`, so the published documentation and
+the registry-owned Markdown stay aligned.
 
 `pnpm registry:build` generates `public/r/design-sync.json` and validates it against the pinned shadcn CLI. The default homepage is `https://registry.manosnits.com`; `REGISTRY_HOMEPAGE` can override it for another deployment.
 
@@ -69,7 +74,7 @@ This repository includes `vercel.json` and serves the generated `public/` direct
 
 - `https://registry.manosnits.com/r/design-sync.json` — installable registry item
 - `https://registry.manosnits.com/r/registry.json` — registry index
-- `https://registry.manosnits.com/` — small installation page
+- `https://registry.manosnits.com/` — searchable Fumadocs documentation
 
 Add `registry.manosnits.com` under the Vercel project's **Settings → Domains**, then create the CNAME record Vercel shows through the DNS provider for `manosnits.com`. Use the value reported for the project rather than copying a generic CNAME value. Every push to `main` will deploy after the Git-integrated build succeeds.
 

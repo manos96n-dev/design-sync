@@ -7,7 +7,7 @@ import { DesignSyncError } from "../core/errors.js";
 /** Read only the provider credential; unrelated application env stays untouched. */
 export async function loadFigmaEnvironment(
   root: string,
-  environment: NodeJS.ProcessEnv = process.env,
+  environment: Record<string, string | undefined> = process.env,
   toolkitDirectory = fileURLToPath(new URL("../", import.meta.url)),
 ): Promise<void> {
   if (environment.FIGMA_ACCESS_TOKEN !== undefined) return;

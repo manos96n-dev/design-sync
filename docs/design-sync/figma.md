@@ -1,3 +1,8 @@
+---
+title: Figma provider
+description: Configure Figma access and understand Design Sync's REST tracking model.
+---
+
 # Figma provider
 
 Create a personal access token with `file_content:read` and access to the design file. For local use, copy `tools/design-sync/.env.example` to `tools/design-sync/.env` and set `FIGMA_ACCESS_TOKEN`. You may instead use the repository-root `.env` or export the variable in your shell.

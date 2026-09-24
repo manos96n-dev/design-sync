@@ -1,3 +1,8 @@
+---
+title: Architecture
+description: Understand Design Sync state, revisions, normalization, and classification.
+---
+
 # Architecture and schemas
 
 ```text

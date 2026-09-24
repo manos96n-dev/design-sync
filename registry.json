@@ -193,6 +193,11 @@
           "path": "docs/design-sync/figma.md",
           "type": "registry:file",
           "target": "~/docs/design-sync/figma.md"
+        },
+        {
+          "path": "docs/design-sync/meta.json",
+          "type": "registry:file",
+          "target": "~/docs/design-sync/meta.json"
         }
       ],
       "docs": "Run pnpm exec tsx tools/design-sync/cli.ts init. Configure FIGMA_ACCESS_TOKEN in your environment. Read docs/design-sync/README.md.",

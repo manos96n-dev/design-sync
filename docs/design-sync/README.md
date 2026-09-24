@@ -1,3 +1,8 @@
+---
+title: Quick start
+description: Install Design Sync, connect a Figma file, and inspect your first synchronization status.
+---
+
 # Design Sync quick start
 
 Design Sync tracks explicit relationships between Figma nodes and code files. Use the human output for daily work and the JSON output for agents or automation.
@@ -149,7 +154,7 @@ The result contains a `copyablePrompt`, candidate identities, and two independen
 1. `approval.question` must be answered before launching a mapping agent that consumes model tokens.
 2. `figmaCompletionApproval.question` must be answered after implementation and verification, before an authenticated Figma tool marks the listed nodes Completed.
 
-Approval to start an agent does not authorize a Figma write or baseline acceptance. The CLI never writes to Figma. See [Agent integration](agents.md) for the complete protocol.
+Approval to start an agent does not authorize a Figma write or baseline acceptance. The CLI never writes to Figma. See [Agent integration](./agents.md) for the complete protocol.
 
 ## Project files and Git
 
@@ -174,7 +179,7 @@ Snapshots can contain design text and properties. Keep the repository access lev
 - Status says mapped code is `NOT_IMPLEMENTED`: inspect the reason. `BASELINE_MISSING` means the mapping exists but has not been accepted.
 - Package-manager banners break JSON parsing: use `pnpm --silent design:status --json` or invoke `pnpm exec tsx tools/design-sync/cli.ts status --json` directly.
 
-See [Figma provider](figma.md) for authentication and API failures, and [Commands](commands.md) for the complete interface.
+See [Figma provider](./figma.md) for authentication and API failures, and [Commands](./commands.md) for the complete interface.
 
 ## Upgrade
 

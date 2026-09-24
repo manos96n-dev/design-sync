@@ -17,7 +17,7 @@ it("reads a quoted root token without loading application variables", async () =
     path.join(root, ".env"),
     'export FIGMA_ACCESS_TOKEN="fixture#token"\nDATABASE_URL=unrelated\n',
   );
-  const environment: NodeJS.ProcessEnv = {};
+  const environment: Record<string, string | undefined> = {};
   await loadFigmaEnvironment(root, environment, toolkit);
   expect(environment).toEqual({ FIGMA_ACCESS_TOKEN: "fixture#token" });
 });
@@ -30,19 +30,19 @@ it.each(["exported", ""])("preserves exported value %j", async (token) => {
 it("prefers the root dotenv over the toolkit dotenv", async () => {
   await writeFile(path.join(root, ".env"), "FIGMA_ACCESS_TOKEN=root\n");
   await writeFile(path.join(toolkit, ".env"), "FIGMA_ACCESS_TOKEN=toolkit\n");
-  const environment: NodeJS.ProcessEnv = {};
+  const environment: Record<string, string | undefined> = {};
   await loadFigmaEnvironment(root, environment, toolkit);
   expect(environment.FIGMA_ACCESS_TOKEN).toBe("root");
 });
 it("uses toolkit dotenv when the root has no token", async () => {
   await writeFile(path.join(root, ".env"), "APP=value\n");
   await writeFile(path.join(toolkit, ".env"), "FIGMA_ACCESS_TOKEN=toolkit\n");
-  const environment: NodeJS.ProcessEnv = {};
+  const environment: Record<string, string | undefined> = {};
   await loadFigmaEnvironment(root, environment, toolkit);
   expect(environment).toEqual({ FIGMA_ACCESS_TOKEN: "toolkit" });
 });
 it("allows missing dotenv files", async () => {
-  const environment: NodeJS.ProcessEnv = {};
+  const environment: Record<string, string | undefined> = {};
   await loadFigmaEnvironment(root, environment, toolkit);
   expect(environment).toEqual({});
 });
