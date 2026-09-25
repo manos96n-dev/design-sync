@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { STATUSES, type DesignNode } from "./types.js";
+import { SCHEMA_VERSION, STATUSES, type DesignNode } from "./types.js";
 export const statusSchema = z.enum(STATUSES);
 const nodeId = z.string().min(1);
 export const referenceSchema = z.object({
@@ -131,9 +131,10 @@ export const reportSchema = z.object({
   }),
   nodes: z.array(nodeResultSchema),
   summary: z.object({
-    implemented: z.number(),
+    acceptedAndMatching: z.number(),
     designChanged: z.number(),
     notImplemented: z.number(),
+    mappedAwaitingBaseline: z.number(),
     codeChanged: z.number(),
     needsReview: z.number(),
     ignored: z.number(),
@@ -200,7 +201,7 @@ export const agentPlanSchema = z.object({
   }),
 });
 const envelope = {
-  schemaVersion: z.literal(1),
+  schemaVersion: z.literal(SCHEMA_VERSION),
   toolVersion: z.string(),
   command: z.string(),
 };

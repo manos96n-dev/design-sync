@@ -94,6 +94,7 @@
             "type": "string",
             "enum": [
               "NOT_IMPLEMENTED",
+              "MAPPED_AWAITING_BASELINE",
               "IMPLEMENTED",
               "DESIGN_CHANGED",
               "CODE_CHANGED",

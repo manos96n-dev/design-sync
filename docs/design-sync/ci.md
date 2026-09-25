@@ -31,6 +31,7 @@ Default policy fails on NEEDS_REVIEW only. To require synchronized designs and i
       "DESIGN_CHANGED",
       "CODE_CHANGED",
       "NOT_IMPLEMENTED",
+      "MAPPED_AWAITING_BASELINE",
       "NEEDS_REVIEW"
     ]
   }

@@ -27,8 +27,8 @@ export function classifyStatus(input: ClassificationInput): DesignStatus {
       (input.baselineDesignRevision || input.baselineCodeRevision))
   )
     return "NEEDS_REVIEW";
-  if (!input.hasMapping || !input.baselineDesignRevision)
-    return "NOT_IMPLEMENTED";
+  if (!input.hasMapping) return "NOT_IMPLEMENTED";
+  if (!input.baselineDesignRevision) return "MAPPED_AWAITING_BASELINE";
   const design = input.baselineDesignRevision !== input.currentDesignRevision;
   const code = input.baselineCodeRevision !== input.currentCodeRevision;
   return design && code

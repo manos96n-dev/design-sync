@@ -14,6 +14,7 @@ type ReportNode = Report["nodes"][number];
 const symbols: Record<ReportNode["status"], string> = {
   IMPLEMENTED: "✓",
   NOT_IMPLEMENTED: "○",
+  MAPPED_AWAITING_BASELINE: "◌",
   DESIGN_CHANGED: "△",
   CODE_CHANGED: "↔",
   NEEDS_REVIEW: "!",
@@ -38,11 +39,12 @@ function compactNode(node: ReportNode) {
 }
 
 function detailedNode(node: ReportNode) {
-  const state = node.reasons.includes("BASELINE_MISSING")
-    ? "MAPPED — BASELINE NOT ACCEPTED"
-    : node.reasons.includes("MAPPING_MISSING")
-      ? "UNMAPPED"
-      : node.status;
+  const state =
+    node.status === "MAPPED_AWAITING_BASELINE"
+      ? "MAPPED — BASELINE NOT ACCEPTED"
+      : node.reasons.includes("MAPPING_MISSING")
+        ? "UNMAPPED"
+        : node.status;
   return [
     `${symbols[node.status]} ${node.name} [${node.nodeId}]`,
     `  ${state} · ${readinessLabel(node)}`,
@@ -98,10 +100,12 @@ export function formatReport(
   const otherUnmapped = unmapped.filter(
     (node) => node.devStatus?.type !== "READY_FOR_DEV",
   );
-  const awaitingBaseline = active.filter((node) =>
-    node.reasons.includes("BASELINE_MISSING"),
+  const awaitingBaseline = active.filter(
+    (node) => node.status === "MAPPED_AWAITING_BASELINE",
   );
-  const implemented = active.filter((node) => node.status === "IMPLEMENTED");
+  const acceptedAndMatching = active.filter(
+    (node) => node.status === "IMPLEMENTED",
+  );
   const ignored = report.nodes.filter((node) => node.status === "IGNORED");
   const coverage = report.summary.coverage;
   const mappedPercent = coverage.active
@@ -123,7 +127,7 @@ export function formatReport(
     `  ${report.summary.devStatus.readyForDev} Ready for dev · ${report.summary.devStatus.completed} Completed · ${report.summary.devStatus.none} unmarked · ${report.summary.devStatus.unknown} unknown`,
     "",
     "Revision health",
-    `  ${needsReview.length} need review · ${designChanged.length} design changed · ${codeChanged.length} code changed · ${implemented.length} accepted and matching`,
+    `  ${needsReview.length} need review · ${designChanged.length} design changed · ${codeChanged.length} code changed · ${acceptedAndMatching.length} accepted and matching`,
   ].join("\n");
 
   const groups = options.showAll
@@ -134,7 +138,7 @@ export function formatReport(
         detailedGroup("Unmapped · Ready for dev", readyUnmapped),
         detailedGroup("Unmapped · Not ready or unmarked", otherUnmapped),
         detailedGroup("Mapped · Baseline not accepted", awaitingBaseline),
-        detailedGroup("Accepted and matching", implemented),
+        detailedGroup("Accepted and matching", acceptedAndMatching),
         detailedGroup("Ignored", ignored),
       ]
     : [

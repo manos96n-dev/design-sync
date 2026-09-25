@@ -230,9 +230,10 @@ export async function buildReport(
     },
     nodes: result,
     summary: {
-      implemented: count("IMPLEMENTED"),
+      acceptedAndMatching: count("IMPLEMENTED"),
       designChanged: count("DESIGN_CHANGED"),
       notImplemented: count("NOT_IMPLEMENTED"),
+      mappedAwaitingBaseline: count("MAPPED_AWAITING_BASELINE"),
       codeChanged: count("CODE_CHANGED"),
       needsReview: count("NEEDS_REVIEW"),
       ignored: count("IGNORED"),

@@ -27,7 +27,19 @@ it("version produces only a schema-valid JSON document", async () => {
   const result = await invoke(["version", "--json"]);
   expect(result.code).toBe(0);
   expect(result.stderr).toBe("");
-  expect(successEnvelopeSchema.parse(JSON.parse(result.stdout)).ok).toBe(true);
+  const output = successEnvelopeSchema.parse(JSON.parse(result.stdout));
+  expect(output).toMatchObject({
+    schemaVersion: 2,
+    toolVersion: "0.2.0",
+    ok: true,
+    result: {
+      toolVersion: "0.2.0",
+      configVersion: 1,
+      manifestVersion: 1,
+      snapshotVersion: 1,
+      outputVersion: 2,
+    },
+  });
 });
 it.each([
   ["sync", "--all"],

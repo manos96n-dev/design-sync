@@ -1,8 +1,8 @@
-import { TOOL_VERSION } from "../core/types.js";
+import { SCHEMA_VERSION, TOOL_VERSION } from "../core/types.js";
 import { errorInfo } from "../core/errors.js";
 export function successEnvelope(command: string, result: unknown) {
   return {
-    schemaVersion: 1,
+    schemaVersion: SCHEMA_VERSION,
     toolVersion: TOOL_VERSION,
     command,
     ok: true,
@@ -11,7 +11,7 @@ export function successEnvelope(command: string, result: unknown) {
 }
 export function errorEnvelope(command: string, error: unknown) {
   return {
-    schemaVersion: 1,
+    schemaVersion: SCHEMA_VERSION,
     toolVersion: TOOL_VERSION,
     command,
     ok: false,

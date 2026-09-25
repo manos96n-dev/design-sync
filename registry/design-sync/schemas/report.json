@@ -4,7 +4,7 @@
   "properties": {
     "schemaVersion": {
       "type": "number",
-      "const": 1
+      "const": 2
     },
     "toolVersion": {
       "type": "string"
@@ -84,6 +84,7 @@
                 "type": "string",
                 "enum": [
                   "NOT_IMPLEMENTED",
+                  "MAPPED_AWAITING_BASELINE",
                   "IMPLEMENTED",
                   "DESIGN_CHANGED",
                   "CODE_CHANGED",
@@ -201,13 +202,16 @@
         "summary": {
           "type": "object",
           "properties": {
-            "implemented": {
+            "acceptedAndMatching": {
               "type": "number"
             },
             "designChanged": {
               "type": "number"
             },
             "notImplemented": {
+              "type": "number"
+            },
+            "mappedAwaitingBaseline": {
               "type": "number"
             },
             "codeChanged": {
@@ -273,9 +277,10 @@
             }
           },
           "required": [
-            "implemented",
+            "acceptedAndMatching",
             "designChanged",
             "notImplemented",
+            "mappedAwaitingBaseline",
             "codeChanged",
             "needsReview",
             "ignored",

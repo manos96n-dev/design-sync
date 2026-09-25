@@ -14,7 +14,7 @@ If no verified nodes qualify, return an empty completion list and do not ask for
 
 1. Read the repository's own instructions and `docs/design-sync/README.md`.
 2. Run `pnpm --silent design:status --json`. Inspect observation age. Run `pnpm --silent design:scan --json` when current designs are needed, or when no cache exists.
-3. Prioritize designs whose `devStatus.type` is `READY_FOR_DEV`, then DESIGN_CHANGED, NOT_IMPLEMENTED, and NEEDS_REVIEW. Report `COMPLETED`, unmarked (`null`), and unknown readiness explicitly. Figma readiness is workflow metadata, not proof that code is correct. Explain CODE_CHANGED rather than silently accepting it. IGNORED nodes require no implementation.
+3. Prioritize designs whose `devStatus.type` is `READY_FOR_DEV`, then DESIGN_CHANGED, NOT_IMPLEMENTED, MAPPED_AWAITING_BASELINE, and NEEDS_REVIEW. Report `COMPLETED`, unmarked (`null`), and unknown readiness explicitly. Figma readiness is workflow metadata, not proof that code is correct. Explain CODE_CHANGED rather than silently accepting it. IGNORED nodes require no implementation.
 4. Identify the exact fileKey and nodeId in the result. Use the agent's Figma integration/MCP to retrieve design context, screenshots, assets, and variables. CLI revisions remain the authority for recorded baselines.
 5. Run `pnpm --silent design:diff --node <id> --json` for an existing baseline. A missing baseline is expected for new work; do not invent a diff.
 6. Inspect mapped files and repository conventions. Register a mapping only when the files materially implement that exact design; duplicate names are not evidence. Registration never marks work implemented.
