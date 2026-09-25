@@ -191,7 +191,13 @@ it("supports the full explicit baseline lifecycle", async () => {
   );
   await register(root, { node: "1:1", files: "screen.ts" });
   report = await status(root);
-  expect(report.nodes[0]!.status).toBe("NOT_IMPLEMENTED");
+  expect(report.nodes[0]!.status).toBe("MAPPED_AWAITING_BASELINE");
+  expect(report.summary).toMatchObject({
+    acceptedAndMatching: 0,
+    notImplemented: 0,
+    mappedAwaitingBaseline: 1,
+  });
+  expect(formatReport(report)).toContain("Mapped · Baseline not accepted (1)");
   expect(report.summary.coverage).toEqual({
     active: 1,
     mappedToCode: 1,
@@ -202,6 +208,11 @@ it("supports the full explicit baseline lifecycle", async () => {
   await sync(root, "1:1", provider);
   report = await status(root);
   expect(report.nodes[0]!.status).toBe("IMPLEMENTED");
+  expect(report.summary).toMatchObject({
+    acceptedAndMatching: 1,
+    notImplemented: 0,
+    mappedAwaitingBaseline: 0,
+  });
   expect(report.summary.coverage).toEqual({
     active: 1,
     mappedToCode: 1,

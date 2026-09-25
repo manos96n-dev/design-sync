@@ -99,15 +99,15 @@ Read the dashboard in this order:
 
 Status values mean:
 
-| Status                                 | Action                                                                               |
-| -------------------------------------- | ------------------------------------------------------------------------------------ |
-| `NOT_IMPLEMENTED` + `MAPPING_MISSING`  | Find or implement the UI, then register its files                                    |
-| `NOT_IMPLEMENTED` + `BASELINE_MISSING` | Code is mapped; verify it before accepting the first baseline                        |
-| `IMPLEMENTED`                          | Current cached design and code match the accepted baseline                           |
-| `DESIGN_CHANGED`                       | Review the Figma changes and update code if needed                                   |
-| `CODE_CHANGED`                         | Explain and verify the code change before accepting a new baseline                   |
-| `NEEDS_REVIEW`                         | Resolve missing data, simultaneous changes, invalid files, or unsupported structures |
-| `IGNORED`                              | Intentionally excluded from implementation tracking                                  |
+| Status                                | Action                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| `NOT_IMPLEMENTED` + `MAPPING_MISSING` | Find or implement the UI, then register its files                                    |
+| `MAPPED_AWAITING_BASELINE`            | Code is mapped; verify it before accepting the first baseline                        |
+| `IMPLEMENTED`                         | Current cached design and code match the accepted baseline                           |
+| `DESIGN_CHANGED`                      | Review the Figma changes and update code if needed                                   |
+| `CODE_CHANGED`                        | Explain and verify the code change before accepting a new baseline                   |
+| `NEEDS_REVIEW`                        | Resolve missing data, simultaneous changes, invalid files, or unsupported structures |
+| `IGNORED`                             | Intentionally excluded from implementation tracking                                  |
 
 `IMPLEMENTED` means baseline agreement. It is not proof of visual equivalence.
 
@@ -179,7 +179,7 @@ Snapshots can contain design text and properties. Keep the repository access lev
 - `FIGMA_FILE_INACCESSIBLE`: confirm `--file` contains only the file key, the token can open that file, and the token has `file_content:read`.
 - `TRACKING_ROOT_MISSING`: convert URL `node-id=123-456` to `123:456` and confirm the node belongs to the configured file.
 - `SCAN_REQUIRED`: run `pnpm design:scan`; tracking changes invalidate the old cache.
-- Status says mapped code is `NOT_IMPLEMENTED`: inspect the reason. `BASELINE_MISSING` means the mapping exists but has not been accepted.
+- `MAPPED_AWAITING_BASELINE`: the mapping exists, but its first baseline has not been accepted. Verify the implementation, then synchronize that exact node only after review.
 - Package-manager banners break JSON parsing: use `pnpm --silent design:status --json` or invoke `pnpm exec tsx tools/design-sync/cli.ts status --json` directly.
 
 See [Figma provider](./figma.md) for authentication and API failures, and [Commands](./commands.md) for the complete interface.

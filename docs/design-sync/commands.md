@@ -80,17 +80,18 @@ Illustrative abbreviated status response (digest placeholders stand for 64 hex c
 
 ```json
 {
-  "schemaVersion": 1,
-  "toolVersion": "0.1.0",
+  "schemaVersion": 2,
+  "toolVersion": "0.2.0",
   "command": "status",
   "ok": true,
   "result": {
     "observedAt": "2025-01-01T00:00:00.000Z",
     "freshness": { "source": "cache", "ageSeconds": 30 },
     "summary": {
-      "implemented": 0,
+      "acceptedAndMatching": 0,
       "designChanged": 1,
       "notImplemented": 0,
+      "mappedAwaitingBaseline": 0,
       "codeChanged": 0,
       "needsReview": 0,
       "ignored": 0,

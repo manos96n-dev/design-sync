@@ -1,5 +1,5 @@
 import { Command, CommanderError } from "commander";
-import { TOOL_VERSION } from "./core/types.js";
+import { SCHEMA_VERSION, TOOL_VERSION } from "./core/types.js";
 import { DesignSyncError } from "./core/errors.js";
 import { resolveRoot } from "./storage/paths.js";
 import { loadFigmaEnvironment } from "./storage/environment.js";
@@ -228,7 +228,7 @@ program.command("version").action(() =>
       manifestVersion: 1,
       snapshotVersion: 1,
       normalizationVersion: 1,
-      outputVersion: 1,
+      outputVersion: SCHEMA_VERSION,
     },
     human: `Design Sync ${TOOL_VERSION}\nManifest schema 1`,
   })),

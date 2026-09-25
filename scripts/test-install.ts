@@ -209,7 +209,7 @@ try {
     await cli(["register", "--node", "1:1", "--files", implementation]);
     assert.equal(
       (await cli(["status"])).result.nodes[0].status,
-      "NOT_IMPLEMENTED",
+      "MAPPED_AWAITING_BASELINE",
     );
     await cli(["sync", "--node", "1:1"]);
     assert.equal((await cli(["status"])).result.nodes[0].status, "IMPLEMENTED");

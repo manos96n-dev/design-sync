@@ -54,7 +54,7 @@ describe("classification", () => {
     [{ baselineDesignRevision: undefined }, "NEEDS_REVIEW"],
     [
       { baselineDesignRevision: undefined, baselineCodeRevision: undefined },
-      "NOT_IMPLEMENTED",
+      "MAPPED_AWAITING_BASELINE",
     ],
     [{ hasMapping: false }, "NEEDS_REVIEW"],
     [
@@ -69,6 +69,11 @@ describe("classification", () => {
   ])("classifies %o as %s", (changes, expected) =>
     expect(classifyStatus({ ...input, ...changes })).toBe(expected),
   );
+  it("publishes the mapped-awaiting-baseline status", () => {
+    expect(statusSchema.parse("MAPPED_AWAITING_BASELINE")).toBe(
+      "MAPPED_AWAITING_BASELINE",
+    );
+  });
   it("covers every baseline/current change combination", () => {
     for (const design of [true, false])
       for (const code of [true, false])

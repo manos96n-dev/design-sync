@@ -83,9 +83,9 @@ Snapshots are written before their manifest references. Interrupted writes can l
 
 ## Classification
 
-Ignored takes precedence. Missing designs, invalid mappings/files, corrupt snapshots, and unsupported structures require review. Without a mapping or baseline the result is NOT_IMPLEMENTED. Otherwise equal revisions mean IMPLEMENTED; design-only/code-only changes yield DESIGN_CHANGED/CODE_CHANGED; both changes yield NEEDS_REVIEW.
+Ignored takes precedence. Missing designs, invalid mappings/files, corrupt snapshots, and unsupported structures require review. A design without a code mapping is NOT_IMPLEMENTED. A mapped design without an accepted baseline is MAPPED_AWAITING_BASELINE. Otherwise equal revisions mean IMPLEMENTED; design-only/code-only changes yield DESIGN_CHANGED/CODE_CHANGED; both changes yield NEEDS_REVIEW.
 
-`NOT_IMPLEMENTED` is a baseline classification, not a claim that no code exists. Reports include a separate coverage breakdown: active designs, mappings to code, mapped nodes awaiting baseline acceptance, accepted baselines, and unmapped nodes.
+`NOT_IMPLEMENTED` means no implementation mapping is registered; it does not prove that no code exists elsewhere in the repository. `MAPPED_AWAITING_BASELINE` means a mapping exists but has not yet been accepted. Reports also include a coverage breakdown: active designs, mappings to code, mapped nodes awaiting baseline acceptance, accepted baselines, and unmapped nodes.
 
 `IMPLEMENTED` means agreement with an explicitly accepted baseline and the reported design observation. It never asserts visual equivalence or that cached designs are currently live.
 

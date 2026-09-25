@@ -202,7 +202,7 @@
       ],
       "docs": "Run pnpm exec tsx tools/design-sync/cli.ts init. Configure FIGMA_ACCESS_TOKEN in your environment. Read docs/design-sync/README.md.",
       "meta": {
-        "toolVersion": "0.1.0"
+        "toolVersion": "0.2.0"
       }
     }
   ]

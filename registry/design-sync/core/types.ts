@@ -1,8 +1,9 @@
-export const TOOL_VERSION = "0.1.0";
-export const SCHEMA_VERSION = 1;
+export const TOOL_VERSION = "0.2.0";
+export const SCHEMA_VERSION = 2;
 export const NORMALIZATION_VERSION = 1;
 export const STATUSES = [
   "NOT_IMPLEMENTED",
+  "MAPPED_AWAITING_BASELINE",
   "IMPLEMENTED",
   "DESIGN_CHANGED",
   "CODE_CHANGED",

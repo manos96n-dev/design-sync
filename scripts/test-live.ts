@@ -30,7 +30,7 @@ try {
   const provider = new FigmaProvider();
   assert.equal(
     (await scan(root, provider)).nodes[0]?.status,
-    "NOT_IMPLEMENTED",
+    "MAPPED_AWAITING_BASELINE",
   );
   // Disposable acceptance baseline tests storage and transport, not visual correctness.
   await sync(root, node, provider);
