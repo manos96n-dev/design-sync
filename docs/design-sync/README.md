@@ -140,8 +140,11 @@ Install the optional project instruction for your agent once:
 
 ```sh
 pnpm design:init --agent codex
-# or: claude / cursor
+pnpm design:init --agent cursor,copilot
+pnpm design:init --agent all
 ```
+
+Supported targets include Codex, Claude Code, Cursor, GitHub Copilot, Gemini CLI, Windsurf/Devin, Cline, Roo Code, Continue, Kiro, and the cross-tool `AGENTS.md` format. Existing instruction files are preserved.
 
 Then ask the agent to run:
 

@@ -13,18 +13,29 @@ Run once from the repository root:
 
 ```sh
 pnpm design:init --agent codex
-# or: claude / cursor
+pnpm design:init --agent cursor,copilot
+pnpm design:init --agent all
 ```
 
-This creates a dedicated instruction file only when it is missing:
+Use a comma-separated list to install several integrations, or `all` to install every supported format. Common aliases such as `claude-code`, `github-copilot`, `gemini-cli`, `devin`, and `roo-code` are accepted. Each destination is created only when it is missing:
 
-| Agent  | Installed file                        |
-| ------ | ------------------------------------- |
-| Codex  | `.agents/skills/design-sync/SKILL.md` |
-| Claude | `.claude/skills/design-sync/SKILL.md` |
-| Cursor | `.cursor/rules/design-sync.mdc`       |
+| `--agent` value | Agent or format             | Installed file                                     |
+| --------------- | --------------------------- | -------------------------------------------------- |
+| `codex`         | Codex                       | `.agents/skills/design-sync/SKILL.md`              |
+| `claude`        | Claude Code                 | `.claude/skills/design-sync/SKILL.md`              |
+| `cursor`        | Cursor                      | `.cursor/rules/design-sync.mdc`                    |
+| `copilot`       | GitHub Copilot              | `.github/instructions/design-sync.instructions.md` |
+| `gemini`        | Gemini CLI                  | `GEMINI.md`                                        |
+| `windsurf`      | Windsurf / Devin            | `.devin/rules/design-sync.md`                      |
+| `cline`         | Cline                       | `.clinerules/design-sync.md`                       |
+| `roo`           | Roo Code                    | `.roo/rules/design-sync.md`                        |
+| `continue`      | Continue                    | `.continue/rules/design-sync.md`                   |
+| `kiro`          | Kiro                        | `.kiro/steering/design-sync.md`                    |
+| `agents-md`     | AGENTS.md-compatible agents | `AGENTS.md`                                        |
 
-Existing `AGENTS.md`, `CLAUDE.md`, and other project rules are preserved. Every installed instruction points to `tools/design-sync/agents/workflow.md`, the canonical workflow.
+Existing instruction files are never overwritten. The JSON result includes an `agents` array whose `status` is `installed` or `preserved` for every requested integration. Every installed instruction points to `tools/design-sync/agents/workflow.md`, the canonical workflow; Gemini uses its native Markdown import syntax.
+
+The `agents-md` target is useful for agents that implement the shared `AGENTS.md` convention. Because that file often contains broader repository guidance, Design Sync preserves it when it already exists instead of appending automatically.
 
 ## Give an agent a mapping task
 

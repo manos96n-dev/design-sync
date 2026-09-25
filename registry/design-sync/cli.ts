@@ -60,7 +60,7 @@ program
   .option("--tracking-roots <ids>", "Comma-separated discovery roots")
   .option(
     "--agent <agent>",
-    "Install optional codex, claude, or cursor workflow",
+    "Install one or more agent workflows (comma-separated, or all)",
   )
   .action((options) =>
     run("init", async (root) => ({

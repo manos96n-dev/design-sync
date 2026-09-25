@@ -10,6 +10,7 @@ import {
 import path from "node:path";
 import os from "node:os";
 import {
+  agentInstallers,
   init,
   register,
   sync,
@@ -133,6 +134,41 @@ it.runIf(process.platform !== "win32")(
     }
   },
 );
+it("installs every supported agent format without overwriting existing instructions", async () => {
+  const installed = await init(
+    root,
+    { agent: "all" },
+    path.join(root, "tools/design-sync/cli.ts"),
+  );
+  expect(installed.agents).toHaveLength(Object.keys(agentInstallers).length);
+  expect(installed.agents.every(({ status }) => status === "installed")).toBe(
+    true,
+  );
+  for (const { path: installedPath } of installed.agents) {
+    const content = await readFile(path.join(root, installedPath), "utf8");
+    expect(content).toContain("tools/design-sync/agents/workflow.md");
+  }
+  expect(await readFile(path.join(root, "GEMINI.md"), "utf8")).toContain(
+    "@tools/design-sync/agents/workflow.md",
+  );
+
+  const preserved = await init(
+    root,
+    { agent: "claude-code,github-copilot,gemini-cli,devin,roo-code,agents" },
+    path.join(root, "tools/design-sync/cli.ts"),
+  );
+  expect(preserved.agents.map(({ agent }) => agent)).toEqual([
+    "claude",
+    "copilot",
+    "gemini",
+    "windsurf",
+    "roo",
+    "agents-md",
+  ]);
+  expect(preserved.agents.every(({ status }) => status === "preserved")).toBe(
+    true,
+  );
+});
 it("supports the full explicit baseline lifecycle", async () => {
   let report = await scan(root, provider);
   expect(report.nodes).toHaveLength(1);

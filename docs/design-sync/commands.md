@@ -23,7 +23,7 @@ Every command supports `--root <repository>` and `--json`. Run commands from the
 
 | Script            | Arguments                                                                                  | Behavior                                                                        |
 | ----------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
-| design:init       | --file KEY --tracking-roots IDS --agent codex\|claude\|cursor                              | Create only missing state, scripts and optional instructions; warn about setup  |
+| design:init       | --file KEY --tracking-roots IDS --agent NAME[,NAME]\|all                                   | Create only missing state, scripts and optional instructions; warn about setup  |
 | design:register   | --node ID --files PATHS [--route URL] [--story ID] [--test PATH] [--name NAME] [--replace] | Register mapping; never accept a baseline                                       |
 | design:scan       | [--all]                                                                                    | Fetch design state, discover units, calculate status, replace observation cache |
 | design:status     | [--refresh] [--all]                                                                        | Cached design plus freshly hashed code; refresh explicitly contacts Figma       |

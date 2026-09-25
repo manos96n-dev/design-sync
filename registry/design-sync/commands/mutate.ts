@@ -30,16 +30,109 @@ const commandNames = [
   "migrate",
   "version",
 ];
+
+type AgentInstaller = {
+  label: string;
+  destination: string;
+  frontmatter?: string;
+  importGuide?: boolean;
+};
+
+export const agentInstallers = {
+  codex: {
+    label: "Codex",
+    destination: ".agents/skills/design-sync/SKILL.md",
+    frontmatter:
+      "name: design-sync\ndescription: Discover design changes, update implementations, verify, then explicitly synchronize one node.",
+  },
+  claude: {
+    label: "Claude Code",
+    destination: ".claude/skills/design-sync/SKILL.md",
+    frontmatter:
+      "name: design-sync\ndescription: Discover design changes, update implementations, verify, then explicitly synchronize one node.",
+  },
+  cursor: {
+    label: "Cursor",
+    destination: ".cursor/rules/design-sync.mdc",
+    frontmatter:
+      "description: Use the Design Sync implementation workflow when working with tracked designs.\nalwaysApply: false",
+  },
+  copilot: {
+    label: "GitHub Copilot",
+    destination: ".github/instructions/design-sync.instructions.md",
+    frontmatter: 'applyTo: "**"',
+  },
+  gemini: {
+    label: "Gemini CLI",
+    destination: "GEMINI.md",
+    importGuide: true,
+  },
+  windsurf: {
+    label: "Windsurf / Devin",
+    destination: ".devin/rules/design-sync.md",
+    frontmatter:
+      "trigger: model_decision\ndescription: Use the Design Sync implementation workflow when working with tracked designs.",
+  },
+  cline: {
+    label: "Cline",
+    destination: ".clinerules/design-sync.md",
+  },
+  roo: {
+    label: "Roo Code",
+    destination: ".roo/rules/design-sync.md",
+  },
+  continue: {
+    label: "Continue",
+    destination: ".continue/rules/design-sync.md",
+    frontmatter:
+      "name: Design Sync\ndescription: Use the Design Sync implementation workflow when working with tracked designs.\nalwaysApply: false",
+  },
+  kiro: {
+    label: "Kiro",
+    destination: ".kiro/steering/design-sync.md",
+    frontmatter:
+      "inclusion: auto\nname: design-sync\ndescription: Use the Design Sync implementation workflow when working with tracked designs.",
+  },
+  "agents-md": {
+    label: "AGENTS.md-compatible agents",
+    destination: "AGENTS.md",
+  },
+} as const satisfies Record<string, AgentInstaller>;
+
+export type AgentName = keyof typeof agentInstallers;
+
+const agentAliases: Record<string, AgentName> = {
+  "claude-code": "claude",
+  "github-copilot": "copilot",
+  "gemini-cli": "gemini",
+  devin: "windsurf",
+  "roo-code": "roo",
+  agents: "agents-md",
+  agentsmd: "agents-md",
+};
+
+function resolveAgents(value: string): AgentName[] {
+  const requested = splitList(value.toLowerCase());
+  if (requested.includes("all"))
+    return Object.keys(agentInstallers) as AgentName[];
+  const resolved = requested.map(
+    (name) => agentAliases[name] ?? (name as AgentName),
+  );
+  const invalid = resolved.filter((name) => !(name in agentInstallers));
+  if (invalid.length)
+    throw new DesignSyncError(
+      "INVALID_AGENT",
+      `Unknown agent${invalid.length === 1 ? "" : "s"}: ${invalid.join(", ")}. Choose ${Object.keys(agentInstallers).join(", ")}, or all.`,
+    );
+  return [...new Set(resolved)];
+}
+
 export async function init(
   root: string,
   options: { file?: string; trackingRoots?: string; agent?: string },
   cliPath: string,
 ) {
-  if (options.agent && !["codex", "claude", "cursor"].includes(options.agent))
-    throw new DesignSyncError(
-      "INVALID_AGENT",
-      "Choose codex, claude, or cursor.",
-    );
+  const requestedAgents = options.agent ? resolveAgents(options.agent) : [];
   const warnings: string[] = [];
   return withLock(root, async () => {
     const configFile = statePath(root, "config.json");
@@ -102,33 +195,42 @@ export async function init(
       warnings.push(
         "No root package.json found. Invoke the installed CLI directly with tsx.",
       );
-    if (options.agent) {
-      const destinations: Record<string, string> = {
-        codex: ".agents/skills/design-sync/SKILL.md",
-        claude: ".claude/skills/design-sync/SKILL.md",
-        cursor: ".cursor/rules/design-sync.mdc",
-      };
-      const destination = path.join(root, destinations[options.agent]!);
+    const agents: Array<{
+      agent: AgentName;
+      path: string;
+      status: "installed" | "preserved";
+    }> = [];
+    for (const agent of requestedAgents) {
+      const installer: AgentInstaller = agentInstallers[agent];
+      const destination = path.join(root, installer.destination);
       const relativeGuide = path
         .relative(
           path.dirname(destination),
           path.join(root, "tools/design-sync/agents/workflow.md"),
         )
         .replaceAll("\\", "/");
-      const frontmatter =
-        options.agent === "cursor"
-          ? "---\ndescription: Design Sync implementation workflow\nalwaysApply: false\n---\n"
-          : "---\nname: design-sync\ndescription: Discover design changes, update implementations, verify, then explicitly synchronize one node.\n---\n";
+      const frontmatter = installer.frontmatter
+        ? `---\n${installer.frontmatter}\n---\n\n`
+        : "";
+      const content = installer.importGuide
+        ? `# Design Sync\n\n@${relativeGuide}\n`
+        : `${frontmatter}# Design Sync\n\nRead and follow [the canonical workflow](${relativeGuide}).\n`;
       await mkdir(path.dirname(destination), { recursive: true });
       try {
-        await writeFile(
-          destination,
-          `${frontmatter}\nRead and follow [the canonical workflow](${relativeGuide}).\n`,
-          { flag: "wx" },
-        );
+        await writeFile(destination, content, { flag: "wx" });
+        agents.push({
+          agent,
+          path: installer.destination,
+          status: "installed",
+        });
       } catch (error) {
         if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
         warnings.push(`Preserved existing agent instructions: ${destination}`);
+        agents.push({
+          agent,
+          path: installer.destination,
+          status: "preserved",
+        });
       }
     }
     if (!config.figma.fileKey)
@@ -139,7 +241,7 @@ export async function init(
       warnings.push(
         "Set FIGMA_ACCESS_TOKEN in your shell or .env before live Figma commands.",
       );
-    return { root, initialized: true, warnings };
+    return { root, initialized: true, agents, warnings };
   });
 }
 export function splitList(value: string) {
