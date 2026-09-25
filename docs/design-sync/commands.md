@@ -34,7 +34,7 @@ Every command supports `--root <repository>` and `--json`. Run commands from the
 | design:migrate    | [--apply]                                                                                  | Preview or apply supported schema migrations                                    |
 | design:version    |                                                                                            | Tool and schema versions                                                        |
 
-File lists are comma-separated; filenames containing commas are not supported by this CLI form. Node IDs use Figma's canonical colon form, e.g. `123:456`. Convert URL `node-id=12-458` to `123:456`. --root is the repository directory; --tracking-roots contains design node IDs.
+File lists are comma-separated; filenames containing commas are not supported by this CLI form. Node IDs use Figma's canonical colon form, e.g. `123:456`. Convert URL `node-id=123-456` to `123:456`. --root is the repository directory; --tracking-roots contains design node IDs.
 
 ## Common recipes
 

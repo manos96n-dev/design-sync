@@ -16,7 +16,7 @@ Implementation date: 2026-09-24. Local host: macOS, Node 26.9.0, pnpm 10.32.1. R
 
 ## Not executed / not delivered
 
-- Real-Figma acceptance of the full disposable-baseline workflow remains pending. Run `pnpm test:live` with FIGMA_ACCESS_TOKEN, DESIGN_SYNC_TEST_FILE, and DESIGN_SYNC_TEST_NODE. Real read-only scans in the private consumer project consumer did succeed using its existing toolkit .env after the dotenv fix; the latest discovered multiple units. No Figma data or synchronization baseline was modified.
+- Real-Figma acceptance of the full disposable-baseline workflow remains pending. Run `pnpm test:live` with FIGMA_ACCESS_TOKEN, DESIGN_SYNC_TEST_FILE, and DESIGN_SYNC_TEST_NODE. Real read-only scans in a private consumer project succeeded after the dotenv fix. No consumer identifiers, Figma data, or synchronization baseline are included here.
 - Linux/Windows execution: CI matrix is configured but has not run from this local repository. Windows symlink escape testing is skipped because it requires additional OS privileges; path normalization is covered on all platforms.
 - Production deployment is configured for Vercel at `registry.manosnits.com`, but the Vercel project and DNS still need to be connected before the public URL can be accepted as live.
 - Visual equivalence: extension interface only. V1 tracks explicitly accepted revisions, not rendered similarity.

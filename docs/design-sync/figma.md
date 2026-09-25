@@ -9,7 +9,7 @@ Create a personal access token with `file_content:read` and access to the design
 
 Lookup order is exported environment, repository-root `.env`, then `tools/design-sync/.env`. Existing environment values win, including an explicitly empty value. The CLI imports no other application variables. Do not put the token in Design Sync configuration, command arguments, snapshots, Git, or chat.
 
-From `https://www.figma.com/design/FILE_KEY/Name?node-id=12-458`, use `FILE_KEY` for `--file` and convert the node query value to `123:456`. Pass raw values, not the complete URL or a Markdown link. V1 reads one file or branch key per repository. Nodes are identified by fileKey/nodeId, never their names. Renames preserve mappings; moving a tracked root on its canvas does not change its revision. Moving descendants relative to each other does.
+From `https://www.figma.com/design/FIGMA_FILE_KEY/Example?node-id=123-456`, use `FIGMA_FILE_KEY` for `--file` and convert the node query value to `123:456`. Pass raw values, not the complete URL or a Markdown link. V1 reads one file or branch key per repository. Nodes are identified by fileKey/nodeId, never their names. Renames preserve mappings; moving a tracked root on its canvas does not change its revision. Moving descendants relative to each other does.
 
 Verify setup with a live scan:
 

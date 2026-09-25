@@ -174,7 +174,7 @@ Snapshots can contain design text and properties. Keep the repository access lev
 
 - `MISSING_TOKEN`: add `FIGMA_ACCESS_TOKEN` to an exported environment or one of the supported `.env` files. Check that an empty exported variable is not overriding the file.
 - `FIGMA_FILE_INACCESSIBLE`: confirm `--file` contains only the file key, the token can open that file, and the token has `file_content:read`.
-- `TRACKING_ROOT_MISSING`: convert URL `node-id=12-458` to `123:456` and confirm the node belongs to the configured file.
+- `TRACKING_ROOT_MISSING`: convert URL `node-id=123-456` to `123:456` and confirm the node belongs to the configured file.
 - `SCAN_REQUIRED`: run `pnpm design:scan`; tracking changes invalidate the old cache.
 - Status says mapped code is `NOT_IMPLEMENTED`: inspect the reason. `BASELINE_MISSING` means the mapping exists but has not been accepted.
 - Package-manager banners break JSON parsing: use `pnpm --silent design:status --json` or invoke `pnpm exec tsx tools/design-sync/cli.ts status --json` directly.
